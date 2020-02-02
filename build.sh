@@ -69,6 +69,8 @@ if [ "$upload" = "why not" ];
 then
 export release_repo=SamarV-121/releases
 export finalzip_path=$(ls "${outdir}"/*2020*.zip | tail -n -1)
+export zip__size=$(ls -sh "${outdir}"/*2020*.zip | tail -n -1)
+export zip_size=$(echo "${zip__size}" | sed "s|${finalzip_path}||")
 export zip_name=$(echo "${finalzip_path}" | sed "s|${outdir}/||")
 export tag=$( echo "${zip_name}-$(date +%H%M)" | sed 's|.zip||')
 if [ -e "${finalzip_path}" ]; then
@@ -76,7 +78,9 @@ if [ -e "${finalzip_path}" ]; then
 Date: $(env TZ="${timezone}" date)" "${finalzip_path}"
 
     telegram -M "Build completed successfully in $((BUILD_DIFF / 3600)) hour and $((BUILD_DIFF / 60)) minute(s)
-Download: ${zip_name}-[Mirror-1]("https://github.com/${release_repo}/releases/download/${tag}/${zip_name}") | [Mirror-2](${BUILD_URL}/artifact/${outdir}/${zip_name})"
+Filename: **${zip_name}**
+Size: ${zip_size}
+Download: [Mirror-1]("https://github.com/${release_repo}/releases/download/${tag}/${zip_name}") | [Mirror-2](${BUILD_URL}artifact/${outdir}/${zip_name})"
 
     curl --data parse_mode=HTML --data chat_id=$TELEGRAM_CHAT --data sticker=CAADBQAD8gADLG6EE1T3chaNrvilFgQ --request POST https://api.telegram.org/bot$TELEGRAM_TOKEN/sendSticker > /dev/null 2>&1
 else
