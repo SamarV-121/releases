@@ -27,7 +27,6 @@ export CCACHE_EXEC=$(which ccache)
 export USE_CCACHE=1
 export CCACHE_DIR=/home/ccache/$username
 ccache -M 50G
-  
 
 if [ "$use_ccache" = "clean" ];
 then
@@ -77,6 +76,7 @@ export zip_size=$(echo "${zip__size}" | sed "s|${finalzip_path}||")
 export zip_name=$(echo "${finalzip_path}" | sed "s|${outdir}/||")
 export tag=$( echo "${zip_name}-$(date +%H%M)" | sed 's|.zip||')
 if [ -e "${finalzip_path}" ]; then
+    curl -F "file=@${finalzip_path}" https://api.bayfiles.com/upload | awk 'BEGIN { FS="https://"; } { print $2; }' | sed 's|","short":"||' | sed 's|^|https://|' > bayfiles
     github-release "${release_repo}" "${tag}" "exp" "${ROM} for $device_codename
 Date: $(env TZ="${timezone}" date)" "${finalzip_path}"
 if [ "$tg_spam" = "Hell yeah" ];
@@ -84,7 +84,7 @@ then
     telegram -M "Build completed successfully in $((BUILD_DIFF / 3600)) hour and $((BUILD_DIFF / 60)) minute(s)
 Filename: ${zip_name}
 Size: ${zip_size}
-Download: [Mirror-1]("https://github.com/${release_repo}/releases/download/${tag}/${zip_name}") | [Mirror-2](${BUILD_URL}artifact/${outdir}/${zip_name})"
+Download: [Mirror-1]("https://github.com/${release_repo}/releases/download/${tag}/${zip_name}") | [Mirror-2](${BUILD_URL}artifact/${outdir}/${zip_name} | [Mirror-3](""$(<bayfiles)"")"
 fi
     curl --data parse_mode=HTML --data chat_id=$TELEGRAM_CHAT --data sticker=CAADBQAD8gADLG6EE1T3chaNrvilFgQ --request POST https://api.telegram.org/bot$TELEGRAM_TOKEN/sendSticker > /dev/null 2>&1
 else
