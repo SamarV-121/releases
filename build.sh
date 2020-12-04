@@ -40,7 +40,7 @@ if [[ $CCACHE != N ]]; then
 fi
 echo -e "$BOLD"Press C to clear CCACHE
 read -t5 -r CCACHE
-[[ $CCACHE == C ]] && cache -C
+[[ $CCACHE == C ]] && ccache -C
 
 # NUKE OUT
 echo -e "$BOLD"Press Y to nuke outdir
@@ -114,9 +114,9 @@ GitHub: https://github.com/$GH_RELEASE/releases/download/$TAG/$OTA_NAME
 GoFile: $(<gofile)
 Md5sum: $OTA_MD5"
 			[[ $SPAM_TELEGRAM == Y ]] && curl -s "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" -d "chat_id=$TELEGRAM_CHAT" -d "parse_mode=Markdown" -d "text=Build completed successfully in $((BUILD_DIFF / 3600)) hour and $((BUILD_DIFF / 60)) minute(s)
-Filename: ${OTA_NAME/_/\\_}
-Size: $OTA_SIZE
-Md5sum: $OTA_MD5
+Filename: [${OTA_NAME/_/\\_}](https://github.com/$GH_RELEASE/releases/download/$TAG/$OTA_NAME)
+Size: \`$OTA_SIZE\`
+Md5sum: \`$OTA_MD5\`
 Download: [Github](https://github.com/$GH_RELEASE/releases/download/$TAG/$OTA_NAME) | [GoFile]($(cat gofile))" >/dev/null
 			[[ $SPAM_TELEGRAM == Y ]] && curl -s "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendSticker" -d "chat_id=$TELEGRAM_CHAT" -d "sticker=CAADBQAD8gADLG6EE1T3chaNrvilFgQ" >/dev/null
 		else
