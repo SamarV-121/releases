@@ -35,7 +35,7 @@ read -t5 -r CCACHE
 if [[ $CCACHE != N ]]; then
 	export USE_CCACHE=1
 	export CCACHE_EXEC=/usr/bin/ccache
-	ccache -M 50G 1>/dev/null
+	ccache -M 50G >/dev/null
 	ccache -o compression=true
 fi
 echo -e "$BOLD"Press C to clear CCACHE
@@ -107,8 +107,8 @@ BUILD\\_TYPE: $BUILD_TYPE" >/dev/null
 			OTA_NAME=$(sed "s#$OUTDIR/##" <<<"$OTA_PATH")
 			OTA_MD5=$(awk <"$OTA_PATH".md5sum '{print $1}')
 			echo Uploading "$OTA_NAME"...
-			github-release "$GH_RELEASE" "$TAG" "master" "Date: $(env TZ="$timezone" date)" "$OTA_PATH" 2>/dev/null
-			gofile "$OTA_PATH" 2>/dev/null 1>gofile
+			github-release "$GH_RELEASE" "$TAG" "master" "Date: $(env TZ="$timezone" date)" "$OTA_PATH" 2>/dev/null &
+			gofile "$OTA_PATH" 2>/dev/null >gofile
 			echo "Download links:
 GitHub: https://github.com/$GH_RELEASE/releases/download/$TAG/$OTA_NAME
 GoFile: $(<gofile)
